@@ -1,5 +1,15 @@
+import About from "./components/About";
+import Features from "./components/Features";
+import Nav from "./components/Nav";
+
 function App() {
-  return <div>Hello World</div>;
+  return (
+    <>
+      <Nav />
+      <About />
+      <Features />
+    </>
+  );
 }
 
 export default App;
