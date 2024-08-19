@@ -3,6 +3,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 
+// HELPERS
+function passwordsMatch(values: { password: string; confirmPassword: string }) {
+  return values.password === values.confirmPassword;
+}
+
 // SCHEMA
 const passwordSchema = z
   .string()
@@ -35,8 +40,11 @@ const schema = z
       .regex(/^[A-Za-z]+$/, {
         message: "Last name can only contain letters.",
       }),
-    username: z.string().min(3).max(15),
-    email: z.string().email(),
+    username: z
+      .string()
+      .min(3, { message: "Username must be more than 3 characters." })
+      .max(15, { message: "Username must be less than 15 characters." }),
+    email: z.string().email({ message: "Please enter a valid email" }),
     password: passwordSchema,
     confirmPassword: z
       .string()
@@ -48,10 +56,6 @@ const schema = z
   });
 
 type FormFields = z.infer<typeof schema>;
-
-function passwordsMatch(values: { password: string; confirmPassword: string }) {
-  return values.password === values.confirmPassword;
-}
 
 // COMPONENT
 const SignupForm = () => {
