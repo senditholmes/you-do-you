@@ -1,17 +1,23 @@
-import LoginButton from "./LoginButton";
-import SignUpButton from "./SignUpButton";
-import styles from "./Nav.module.css";
+import { Link } from "react-router-dom";
 
 export default function Nav() {
   return (
-    <nav className={styles.navbar}>
-      <div className={styles["navbar-logo"]}>
-        <a href="/">Logo Here</a>
+    <nav className="flex justify-between border bg-gray-200">
+      <div className="flex items-center ml-5">
+        <Link to="/">Logo Here</Link>
       </div>
 
-      <ul className={styles["navbar-items-list"]}>
-        <LoginButton />
-        <SignUpButton />
+      <ul className="flex justify-around">
+        <li>
+          <button className="p-5">
+            <Link to="login">Login</Link>
+          </button>
+        </li>
+        <li>
+          <button className="p-5">
+            <Link to="signup">Sign Up</Link>
+          </button>
+        </li>
       </ul>
     </nav>
   );

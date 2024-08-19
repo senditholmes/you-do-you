@@ -7,8 +7,8 @@ import Nav from "./components/Nav/Nav";
 function App() {
   return (
     <>
-      <Nav />
       <BrowserRouter>
+        <Nav />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="login" element={<LoginForm />} />
