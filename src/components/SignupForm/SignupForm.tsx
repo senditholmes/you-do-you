@@ -2,10 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import InputField from "./InputField/InputField";
-import { formInputs } from "./InputField/InputFields Data/formInputs";
+import InputField from "../InputField/InputField";
+import { formInputs } from "../InputField/InputFields Data/formInputs";
 import { passwordsMatch } from "../../helpers/passwordMatch";
-import validateUser from "../../helpers/validateUser";
+import addUserToDatabase from "../../helpers/validateUser";
 
 const URL = "http://localhost:3000/signup";
 
@@ -77,9 +77,10 @@ const SignupForm = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit: SubmitHandler<FormFields> = async (formData) => {
     try {
-      validateUser(data, URL);
+      const response = await addUserToDatabase(formData, URL);
+      console.log(response);
     } catch (error) {
       setError("root", { message: "Sorry, something went wrong." });
     }

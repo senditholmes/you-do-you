@@ -5,10 +5,10 @@ import sqlite3 from "sqlite3";
 // DATABASE
 sqlite3.verbose();
 const db = new sqlite3.Database(
-  "/Users/djh/Projects/you-do-you-app/db/youdoyou.sql",
+  "/Users/djh/Projects/you-do-you-app/db/youdoyou.db",
   (error) => {
     if (error) {
-      console.log(`Database error occured on connecting: + ${error}`);
+      console.log(`Error on connecting: + ${error.message}`);
     } else {
       console.log("Connected to database successfully.");
     }
@@ -28,20 +28,37 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-  db.serialize(() => {
-    db.each("SELECT rowid AS id, info FROM lorem", (err, row) => {
-      console.log(row.id + ": " + row.info);
-    });
-    db.close((error) => {
-      if (error) {
-        console.log(`Database error occured on closing: ${error}`);
-      } else {
-        console.log("Database connection closed.");
-      }
-    });
-  });
+  const userToInsert = { ...req.body };
+  delete userToInsert.confirmPassword;
+  userToInsert.createdAt = new Date()
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
 
-  res.status(200).send({ everything: "isokay" });
+  db.serialize(() => {
+    db.run(
+      "INSERT INTO Users (FirstName, LastName, Username, Email, PasswordHash, CreatedAt) VALUES ($firstName, $lastName, $username, $email, $password, $createdAt)",
+      {
+        $firstName: userToInsert.firstName,
+        $lastName: userToInsert.lastName,
+        $username: userToInsert.username,
+        $email: userToInsert.email,
+        $password: userToInsert.password,
+        $createdAt: userToInsert.createdAt,
+      },
+      function (error) {
+        if (error) {
+          console.log(`Error on insertion: ${error.message}`);
+          res.send({ userAdded: "Failed" });
+        } else {
+          console.log(
+            `Insertion Successsful: Last Row Inserted: ${this.lastID}`
+          );
+          res.send({ userAdded: userToInsert });
+        }
+      }
+    );
+  });
 });
 
 app.listen(PORT, () => {
