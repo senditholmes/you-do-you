@@ -2,9 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import Input from "./Input/Input";
+import InputField from "./InputField/InputField";
 import { formInputs } from "../../data/formInputs";
 import { passwordsMatch } from "../../helpers/passwordMatch";
+import validateUser from "../../helpers/validateUser";
+
+const URL = "http://localhost:3000/signup";
 
 // /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
@@ -54,7 +57,7 @@ const schema = z
     path: ["confirmPassword"],
   });
 
-type FormFields = z.infer<typeof schema>;
+export type FormFields = z.infer<typeof schema>;
 
 /////////////////////////////////////////////////////////////////// COMPONENT //////////////////////////////////////////////////////////////////////////
 
@@ -76,14 +79,7 @@ const SignupForm = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-      // POST TO SERVER
-      await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Specify the content type
-        },
-        body: JSON.stringify(data), // Convert the data object to a JSON string
-      });
+      validateUser(data, URL);
     } catch (error) {
       setError("root", { message: "Sorry, something went wrong." });
     }
@@ -110,7 +106,7 @@ const SignupForm = () => {
       >
         {formInputs.map((input) => {
           return (
-            <Input
+            <InputField
               key={input.id}
               labelContent={input.labelContent}
               type={input.type}
