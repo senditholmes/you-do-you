@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import InputField from "./InputField/InputField";
-import { formInputs } from "../../data/formInputs";
+import { formInputs } from "./InputField/InputFields Data/formInputs";
 import { passwordsMatch } from "../../helpers/passwordMatch";
 import validateUser from "../../helpers/validateUser";
 
@@ -59,7 +59,7 @@ const schema = z
 
 export type FormFields = z.infer<typeof schema>;
 
-/////////////////////////////////////////////////////////////////// COMPONENT //////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
 const SignupForm = () => {
   const {
