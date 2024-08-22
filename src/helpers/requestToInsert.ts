@@ -1,6 +1,9 @@
 import { FormFields } from "../components/SignupForm/SignupForm";
 
-const addUserToDatabase = async (userToValidate: FormFields, URL: string) => {
+const requestServerToInsert = async (
+  userToValidate: FormFields,
+  URL: string
+) => {
   const apiRes = await fetch(URL, {
     method: "POST",
     headers: {
@@ -8,8 +11,8 @@ const addUserToDatabase = async (userToValidate: FormFields, URL: string) => {
     },
     body: JSON.stringify(userToValidate),
   });
-  const test = await apiRes.json();
-  console.log(test);
+
+  return apiRes;
 };
 
-export default addUserToDatabase;
+export default requestServerToInsert;

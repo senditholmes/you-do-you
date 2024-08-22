@@ -25,17 +25,11 @@ app.post("/signup", async (req, res) => {
 
   if (!isInDatabase) {
     const insertResult = await insertQuery(sanitzedUser);
-    res.status(200).send({
-      result: `User id: ${insertResult}: ${Object.values(
-        sanitzedUser
-      )} successfully added.`,
-    });
-  } else if (isInDatabase) {
-    res.status(500).send({
-      result: `Failed to add user ${Object.values(
-        sanitzedUser
-      )} as they are already in the database.`,
-    });
+    if (insertResult) {
+      res.status(200).send({ message: "User added successfully." });
+    }
+  } else {
+    res.status(500).send({ message: "Unable to add user." });
   }
 });
 

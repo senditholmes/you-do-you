@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Nav() {
   return (
-    <nav className="flex justify-between border bg-gray-200 mb-10 p-1">
+    <nav className="flex justify-between border bg-gray-200 p-1">
       <div className="flex items-center ml-5">
         <Link to="/">
           <p className="text-lg font-bold">You-Do-You</p>

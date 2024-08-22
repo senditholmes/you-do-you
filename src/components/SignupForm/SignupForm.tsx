@@ -5,7 +5,8 @@ import { z } from "zod";
 import InputField from "../InputField/InputField";
 import { formInputs } from "../InputField/InputFields Data/formInputs";
 import { passwordsMatch } from "../../helpers/passwordMatch";
-import addUserToDatabase from "../../helpers/validateUser";
+import requestServerToInsert from "../../helpers/requestToInsert";
+import toast from "react-hot-toast";
 
 const URL = "http://localhost:3000/signup";
 
@@ -66,7 +67,7 @@ const SignupForm = () => {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting },
   } = useForm<FormFields>({
     defaultValues: {
       firstName: "John",
@@ -79,11 +80,21 @@ const SignupForm = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (formData) => {
     try {
-      console.log("Request start.");
-      const response = await addUserToDatabase(formData, URL);
-      console.log(response);
+      const insertRequestResult = await requestServerToInsert(formData, URL);
+      if (insertRequestResult.ok) {
+        //TODO redirect to login page
+        toast.success(
+          "User successfully registered. Let's get you logged in...",
+          { duration: 5000 }
+        );
+      } else if (!insertRequestResult.ok) {
+        toast.error(
+          "User is already registered. Please login or email us for assistance.",
+          { duration: 5000 }
+        );
+      }
     } catch (error) {
-      console.log(error);
+      // redirect to failure page
       setError("root", { message: "Sorry, something went wrong." });
     }
   };
@@ -92,15 +103,8 @@ const SignupForm = () => {
 
   return (
     <section className="h-svh[80] w-svw flex flex-col justify-between gap-3 align-middle items-center">
-      <div className="h-40 flex flex-col justify-between items-center">
+      <div className="h-40 flex flex-col justify-center items-center">
         <h1 className="font-extrabold text-6xl">Let's get you setup!</h1>
-
-        <p className="text-xl text-red-500 p-5">
-          {errors.root?.message}
-          {isSubmitSuccessful && "Submission Successful!"}
-        </p>
-
-        <p className="text-xl text-black p-5"></p>
       </div>
 
       <form

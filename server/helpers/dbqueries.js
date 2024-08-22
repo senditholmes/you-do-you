@@ -28,7 +28,7 @@ const insertQuery = async (user) => {
           },
           function (error) {
             if (error) {
-              return error;
+              reject(error);
             } else {
               resolve(this.lastID);
             }
@@ -45,7 +45,7 @@ const checkIfUserExists = async (user) => {
   return new Promise((resolve, reject) => {
     try {
       db.get(
-        "SELECT * FROM Users WHERE Username = $username AND Email = $email",
+        "SELECT * FROM Users WHERE Username = $username OR Email = $email",
         {
           $username: user.username,
           $email: user.email,
