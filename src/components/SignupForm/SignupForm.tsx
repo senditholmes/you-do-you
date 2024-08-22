@@ -79,9 +79,11 @@ const SignupForm = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (formData) => {
     try {
+      console.log("Request start.");
       const response = await addUserToDatabase(formData, URL);
       console.log(response);
     } catch (error) {
+      console.log(error);
       setError("root", { message: "Sorry, something went wrong." });
     }
   };
