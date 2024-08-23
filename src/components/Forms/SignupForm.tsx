@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import InputField from "../InputField";
 import { passwordsMatch } from "../../helpers/passwordMatch";
-import requestServerToInsert from "../../helpers/requestToInsert";
+import { requestServerAction } from "../../helpers/API";
 import { signInFormInputs } from "../../utils/signUpFormInputs";
 import generatePasswordSchema from "../../helpers/generatePasswordSchema";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +44,7 @@ const schema = z
     path: ["confirmPassword"],
   });
 
-type SignUpFormFields = z.infer<typeof schema>;
+export type SignUpFormFields = z.infer<typeof schema>;
 
 /////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
@@ -67,15 +67,20 @@ const SignupForm = () => {
 
   const onSubmit: SubmitHandler<SignUpFormFields> = async (formData) => {
     try {
-      const insertRequestResult = await requestServerToInsert(formData, URL);
-      if (insertRequestResult.ok) {
+      const insertRequestResponse = await requestServerAction(
+        formData,
+        URL
+        // "insert"
+      );
+
+      if (insertRequestResponse.ok) {
         //TODO redirect to login page
         toast.success(
           "User successfully registered. Let's get you logged in...",
           { duration: 5000 }
         );
         navigate(`/login`, { replace: true });
-      } else if (!insertRequestResult.ok) {
+      } else if (!insertRequestResponse.ok) {
         toast.error(
           "User is already registered. Please login or email us for assistance.",
           { duration: 5000 }
@@ -84,7 +89,7 @@ const SignupForm = () => {
       }
     } catch (error) {
       // redirect to failure page
-      setError("root", { message: "Sorry, something went wrong." });
+      setError("root", { message: `${error}` });
     }
   };
 

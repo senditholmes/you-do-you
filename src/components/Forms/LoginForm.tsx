@@ -5,6 +5,10 @@ import { z } from "zod";
 import { loginInFormInputs } from "../../utils/loginInFormInputs";
 import generatePasswordSchema from "../../helpers/generatePasswordSchema";
 import InputField from "../InputField";
+import toast from "react-hot-toast";
+import { requestServerAction } from "../../helpers/API";
+
+const URL = "http://localhost:3000/login";
 
 // /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +21,7 @@ const loginSchema = z.object({
   password: passwordSchema,
 });
 
-type LoginFormFields = z.infer<typeof loginSchema>;
+export type LoginFormFields = z.infer<typeof loginSchema>;
 
 /////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
@@ -36,8 +40,25 @@ const LoginForm = () => {
   });
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (formData) => {
-    setError("root", { message: "Testing Error Message" });
-    console.log(formData);
+    try {
+      const authenticateResponse = await requestServerAction(
+        formData,
+        URL
+        // "authenticate"
+      );
+      if (authenticateResponse.ok) {
+        toast.success("Welcome!", { duration: 3000 });
+      } else if (!authenticateResponse.ok) {
+        toast.error(
+          "Sorry, we were not able to log you in. Please try again later",
+          {
+            duration: 3000,
+          }
+        );
+      }
+    } catch (error) {
+      setError("root", { message: `${error}` });
+    }
   };
 
   /////////////////////////////////////////////////////////////////// RENDER //////////////////////////////////////////////////////////////////////////

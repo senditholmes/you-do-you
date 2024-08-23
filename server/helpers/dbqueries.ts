@@ -41,14 +41,14 @@ const insertQuery = async (user) => {
   });
 };
 
-const checkIfUserExists = async (user) => {
+const checkIfUserExists = async (userData) => {
   return new Promise((resolve, reject) => {
     try {
       db.get(
         "SELECT * FROM Users WHERE Username = $username OR Email = $email",
         {
-          $username: user.username,
-          $email: user.email,
+          $username: userData.username,
+          $email: userData.email,
         },
         (err, row) => {
           if (err) {
