@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { z } from "zod";
+import toast from "react-hot-toast";
 import InputField from "../InputField";
 import { passwordsMatch } from "../../helpers/passwordMatch";
 import requestServerToInsert from "../../helpers/requestToInsert";
-import toast from "react-hot-toast";
 import { signInFormInputs } from "../../utils/signUpFormInputs";
 import generatePasswordSchema from "../../helpers/generatePasswordSchema";
+import { useNavigate } from "react-router-dom";
 
 const URL = "http://localhost:3000/signup";
 
@@ -48,6 +49,7 @@ type SignUpFormFields = z.infer<typeof schema>;
 /////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
 const SignupForm = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -72,11 +74,13 @@ const SignupForm = () => {
           "User successfully registered. Let's get you logged in...",
           { duration: 5000 }
         );
+        navigate(`/login`, { replace: true });
       } else if (!insertRequestResult.ok) {
         toast.error(
           "User is already registered. Please login or email us for assistance.",
           { duration: 5000 }
         );
+        return;
       }
     } catch (error) {
       // redirect to failure page
