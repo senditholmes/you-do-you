@@ -1,6 +1,9 @@
+import Nav from "../components/Nav";
+
 export default function LandingPage() {
   return (
     <>
+      <Nav />
       <section>
         <div>
           <h1> TAGLINE HERE </h1>

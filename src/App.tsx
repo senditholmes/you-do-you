@@ -1,9 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing";
-import Nav from "./components/Nav/Nav";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SignupPage from "./pages/SignupPage";
-import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/Signup";
+import LoginPage from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
@@ -21,11 +20,10 @@ function App() {
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <Toaster position="top-right" toastOptions={{ duration: 2000 }} />
-          <Nav />
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
           </Routes>
         </QueryClientProvider>
       </BrowserRouter>

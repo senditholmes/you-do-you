@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import InputField from "../../InputField/InputField";
-import { loginInFormInputs } from "./loginInFormInputs";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import generatePasswordSchema from "../../../helpers/generatePasswordSchema";
+import { loginInFormInputs } from "../../utils/loginInFormInputs";
+import generatePasswordSchema from "../../helpers/generatePasswordSchema";
+import InputField from "../InputField";
 
 // /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 

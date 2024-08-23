@@ -2,12 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import InputField from "../../InputField/InputField";
-import { passwordsMatch } from "../../../helpers/passwordMatch";
-import requestServerToInsert from "../../../helpers/requestToInsert";
+import InputField from "../InputField";
+import { passwordsMatch } from "../../helpers/passwordMatch";
+import requestServerToInsert from "../../helpers/requestToInsert";
 import toast from "react-hot-toast";
-import { signInFormInputs } from "./signUpFormInputs";
-import generatePasswordSchema from "../../../helpers/generatePasswordSchema";
+import { signInFormInputs } from "../../utils/signUpFormInputs";
+import generatePasswordSchema from "../../helpers/generatePasswordSchema";
 
 const URL = "http://localhost:3000/signup";
 

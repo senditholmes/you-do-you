@@ -12,12 +12,12 @@ export default function Nav() {
       <ul className="flex justify-around">
         <li className="text-lg">
           <button className="p-5">
-            <Link to="login">Login</Link>
+            <Link to="/login">Login</Link>
           </button>
         </li>
         <li className="text-lg">
           <button className="p-5">
-            <Link to="signup">Sign Up</Link>
+            <Link to="/signup">Sign Up</Link>
           </button>
         </li>
       </ul>
