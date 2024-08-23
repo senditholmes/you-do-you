@@ -1,4 +1,4 @@
-const formInputs = [
+const signInFormInputs = [
   {
     name: "firstName",
     id: "firstName",
@@ -37,4 +37,4 @@ const formInputs = [
   },
 ];
 
-export { formInputs };
+export { signInFormInputs };

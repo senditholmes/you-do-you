@@ -1,4 +1,4 @@
-import { FormFields } from "../components/SignupForm/SignupForm";
+import { FormFields } from "../components/Forms/SignupForm/SignupForm";
 
 const requestServerToInsert = async (
   userToValidate: FormFields,

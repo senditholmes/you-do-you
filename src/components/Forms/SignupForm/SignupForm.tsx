@@ -2,33 +2,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import InputField from "../InputField/InputField";
-import { formInputs } from "../InputField/InputFields Data/formInputs";
-import { passwordsMatch } from "../../helpers/passwordMatch";
-import requestServerToInsert from "../../helpers/requestToInsert";
+import InputField from "../../InputField/InputField";
+import { passwordsMatch } from "../../../helpers/passwordMatch";
+import requestServerToInsert from "../../../helpers/requestToInsert";
 import toast from "react-hot-toast";
+import { signInFormInputs } from "./signUpFormInputs";
+import generatePasswordSchema from "../../../helpers/generatePasswordSchema";
 
 const URL = "http://localhost:3000/signup";
 
 // /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
-const passwordSchema = z
-  .string()
-  .min(8, { message: "Password must be at least 8 characters." })
-  .max(20, { message: "Password must be maximum 20 characters." })
-  .refine((password) => /[A-Z]/.test(password), {
-    message: "Please include an upper case character.",
-  })
-  .refine((password) => /[a-z]/.test(password), {
-    message: "Please include a lowercase character.",
-  })
-  .refine((password) => /[0-9]/.test(password), {
-    message: "Please include a number.",
-  })
-  .refine((password) => /[!@#$%^&*]/.test(password), {
-    message: "Please include at least one special character",
-  });
-
+const passwordSchema = generatePasswordSchema();
 const schema = z
   .object({
     firstName: z
@@ -58,7 +43,7 @@ const schema = z
     path: ["confirmPassword"],
   });
 
-export type FormFields = z.infer<typeof schema>;
+type SignUpFormFields = z.infer<typeof schema>;
 
 /////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
@@ -68,7 +53,7 @@ const SignupForm = () => {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<FormFields>({
+  } = useForm<SignUpFormFields>({
     defaultValues: {
       firstName: "John",
       lastName: "Doe",
@@ -78,7 +63,7 @@ const SignupForm = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (formData) => {
+  const onSubmit: SubmitHandler<SignUpFormFields> = async (formData) => {
     try {
       const insertRequestResult = await requestServerToInsert(formData, URL);
       if (insertRequestResult.ok) {
@@ -111,7 +96,7 @@ const SignupForm = () => {
         className="w-[45vw] p-10 border rounded-md shadow-md flex flex-wrap justify-between gap-5"
         onSubmit={handleSubmit(onSubmit)}
       >
-        {formInputs.map((input) => {
+        {signInFormInputs.map((input) => {
           return (
             <InputField
               key={input.id}
@@ -126,7 +111,6 @@ const SignupForm = () => {
         })}
 
         {/* // BUTTONS */}
-
         <div id="buttons" className="flex w-full gap-36">
           <button
             type="submit"
