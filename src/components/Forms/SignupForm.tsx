@@ -1,14 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import toast from "react-hot-toast";
-import InputField from "../InputField";
+
 import { passwordsMatch } from "../../helpers/passwordMatch";
 import { requestServerAction } from "../../helpers/API";
 import { signInFormInputs } from "../../utils/signUpFormInputs";
 import generatePasswordSchema from "../../helpers/generatePasswordSchema";
-import { useNavigate } from "react-router-dom";
+
+import InputField from "../InputField";
 
 const URL = "http://localhost:3000/signup";
 
@@ -65,30 +69,26 @@ const SignupForm = () => {
     resolver: zodResolver(schema),
   });
 
+  /////////////////////////////////////////////////////////////////// SERVER ACTIONS /////////////////////////////////////////////////////////////////////
+
   const onSubmit: SubmitHandler<SignUpFormFields> = async (formData) => {
     try {
-      const insertRequestResponse = await requestServerAction(
-        formData,
-        URL
-        // "insert"
-      );
+      const insertRequestResponse = await requestServerAction(formData, URL);
 
-      if (insertRequestResponse.ok) {
-        //TODO redirect to login page
+      if (insertRequestResponse.status === 200) {
         toast.success(
           "User successfully registered. Let's get you logged in...",
           { duration: 5000 }
         );
         navigate(`/login`, { replace: true });
-      } else if (!insertRequestResponse.ok) {
-        toast.error(
-          "User is already registered. Please login or email us for assistance.",
-          { duration: 5000 }
-        );
+      } else if (insertRequestResponse.status != 200) {
+        toast.error("Username or email already registered!", {
+          duration: 5000,
+        });
         return;
       }
     } catch (error) {
-      // redirect to failure page
+      // TODO redirect to failure page
       setError("root", { message: `${error}` });
     }
   };

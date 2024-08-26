@@ -1,20 +1,19 @@
 import { LoginFormFields } from "../components/Forms/LoginForm";
 import { SignUpFormFields } from "../components/Forms/SignupForm";
 
+import axios from "axios";
+
 const requestServerAction = async (
   formData: SignUpFormFields | LoginFormFields,
   URL: string
-  // type: string
 ) => {
-  const apiRes = await fetch(URL, {
-    method: "POST",
+  const response = await axios.post(URL, formData, {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(formData),
   });
 
-  return apiRes;
+  return response;
 };
 
 export { requestServerAction };

@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { prepareUserData, validateUser } from "./helpers/auth.js";
+import { prepareUserData } from "./helpers/auth.js";
 import { insertQuery, checkIfUserExists } from "./helpers/dbqueries.js";
+import bcrypt from "bcrypt";
 
 // DATABASE
 
@@ -21,31 +22,31 @@ app.get("/", (req, res) => {
 // SIGNUP
 app.post("/signup", async (req, res) => {
   const sanitzedUser = await prepareUserData(req.body, "signup");
-  const isInDatabase = await checkIfUserExists(sanitzedUser);
+  const userInDatabase = await checkIfUserExists(sanitzedUser);
 
-  if (!isInDatabase) {
+  if (!userInDatabase) {
     const insertResult = await insertQuery(sanitzedUser);
     if (insertResult) {
       res.status(200).send({ message: "User added successfully." });
     }
-  } else if (isInDatabase) {
+  } else if (userInDatabase) {
     res.status(500).send({ message: "User already registered!" });
   }
 });
 
 app.post("/login", async (req, res) => {
-  const sanitzedUser = await prepareUserData(req.body, "login");
-  const isInDatabase = await checkIfUserExists(sanitzedUser);
+  const userToValidate = req.body;
+  const userInDatabase = await checkIfUserExists(userToValidate);
 
-  if (!isInDatabase) {
-    res
-      .status(500)
-      .send({ message: "Sorry, you are not yet registered. Please sign up!" });
-  } else if (isInDatabase) {
-    const validateUserResult = await validateUser(sanitzedUser);
-    if (validateUserResult) {
-      res.status(200).send({ message: "Validation successful!" });
-    }
+  const userValidated = await bcrypt.compare(
+    userToValidate.password,
+    userInDatabase.PasswordHash
+  );
+  console.log(userValidated);
+  if (userValidated) {
+    res.status(200).send({ message: "User logged in successfully" });
+  } else {
+    res.status(401).send({ message: "Invalid credentials" });
   }
 });
 

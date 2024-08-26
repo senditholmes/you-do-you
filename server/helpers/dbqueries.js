@@ -51,15 +51,7 @@ const checkIfUserExists = async (userData) => {
           $email: userData.email,
         },
         (err, row) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (!row) {
-              resolve(false);
-            } else {
-              resolve(true);
-            }
-          }
+          resolve(row);
         }
       );
     } catch (error) {

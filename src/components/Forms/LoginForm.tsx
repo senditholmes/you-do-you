@@ -39,25 +39,19 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  /////////////////////////////////////////////////////////////////// ON SUBMIT /////////////////////////////////////////////////////////////////////
+
   const onSubmit: SubmitHandler<LoginFormFields> = async (formData) => {
     try {
-      const authenticateResponse = await requestServerAction(
-        formData,
-        URL
-        // "authenticate"
-      );
-      if (authenticateResponse.ok) {
+      const authenticateResponse = await requestServerAction(formData, URL);
+
+      if (authenticateResponse.status === 200) {
+        console.log(authenticateResponse);
         toast.success("Welcome!", { duration: 3000 });
-      } else if (!authenticateResponse.ok) {
-        toast.error(
-          "Sorry, we were not able to log you in. Please try again later",
-          {
-            duration: 3000,
-          }
-        );
       }
     } catch (error) {
       setError("root", { message: `${error}` });
+      toast.error(`${error}`, { duration: 4000 });
     }
   };
 

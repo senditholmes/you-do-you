@@ -21,11 +21,10 @@ const hashPassword = (password) => {
 const prepareUserData = async (userData, type) => {
   const sanitzedUserData = userData;
   const hash = await hashPassword(sanitzedUserData.password);
-  sanitzedUserData.password = hash;
-
   return new Promise((resolve, reject) => {
     try {
       if (type === "signup") {
+        sanitzedUserData.password = hash;
         delete sanitzedUserData.confirmPassword;
         sanitzedUserData.createdAt = new Date()
           .toISOString()
@@ -40,9 +39,14 @@ const prepareUserData = async (userData, type) => {
   });
 };
 
-const validateUser = async (userData) => {
-  console.log(userData);
-  return 1;
+const validateUser = async (userData, verifiedRow) => {
+  if (userData.password === verifiedRow.password) {
+    console.log("User validated");
+    return 1;
+  } else {
+    console.log("User password incorrect.");
+    return 0;
+  }
 };
 
 export { prepareUserData, validateUser };
