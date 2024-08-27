@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+const { sign } = jwt;
 
 const hashPassword = (password) => {
   return new Promise((resolve, reject) => {
@@ -39,14 +41,21 @@ const prepareUserData = async (userData, type) => {
   });
 };
 
-const validateUser = async (userData, verifiedRow) => {
-  if (userData.password === verifiedRow.password) {
-    console.log("User validated");
-    return 1;
-  } else {
-    console.log("User password incorrect.");
-    return 0;
-  }
+const handleToken = async (userData) => {
+  sign(
+    {
+      id: userData.UserID,
+      firstName: userData.FirstName,
+      username: userData.Username,
+      email: userData.Email,
+    },
+    process.env.JWT_SECRET,
+    {},
+    (error, token) => {
+      if (error) throw error;
+      return token;
+    }
+  );
 };
 
-export { prepareUserData, validateUser };
+export { prepareUserData, handleToken };

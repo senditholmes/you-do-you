@@ -76,16 +76,10 @@ const SignupForm = () => {
       const insertRequestResponse = await requestServerAction(formData, URL);
 
       if (insertRequestResponse.status === 200) {
-        toast.success(
-          "User successfully registered. Let's get you logged in...",
-          { duration: 5000 }
-        );
+        toast.success(insertRequestResponse.data.success);
         navigate(`/login`, { replace: true });
-      } else if (insertRequestResponse.status != 200) {
-        toast.error("Username or email already registered!", {
-          duration: 5000,
-        });
-        return;
+      } else {
+        toast.error(insertRequestResponse.data.error);
       }
     } catch (error) {
       // TODO redirect to failure page
