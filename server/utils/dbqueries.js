@@ -43,20 +43,18 @@ const insertQuery = async (user) => {
 
 const checkIfUserExists = async (userData) => {
   return new Promise((resolve, reject) => {
-    try {
-      db.get(
-        "SELECT * FROM Users WHERE Username = $username OR Email = $email",
-        {
-          $username: userData.username,
-          $email: userData.email,
-        },
-        (err, row) => {
-          resolve(row);
+    db.get(
+      "SELECT * FROM Users WHERE Username = $username",
+      {
+        $username: userData.username,
+      },
+      (err, row) => {
+        if (err) {
+          reject(err);
         }
-      );
-    } catch (error) {
-      reject(error);
-    }
+        resolve(row);
+      }
+    );
   });
 };
 

@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-const { sign } = jwt;
 
 const hashPassword = (password) => {
   return new Promise((resolve, reject) => {
@@ -41,21 +40,16 @@ const prepareUserData = async (userData, type) => {
   });
 };
 
-const handleToken = async (userData) => {
-  sign(
+const createJWT = (user) => {
+  const token = jwt.sign(
     {
-      id: userData.UserID,
-      firstName: userData.FirstName,
-      username: userData.Username,
-      email: userData.Email,
+      id: user.UserID,
+      username: user.Username,
     },
-    process.env.JWT_SECRET,
-    {},
-    (error, token) => {
-      if (error) throw error;
-      return token;
-    }
+    process.env.JWT_SECRET
   );
+
+  return token;
 };
 
-export { prepareUserData, handleToken };
+export { prepareUserData, createJWT };

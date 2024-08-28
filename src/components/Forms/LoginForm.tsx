@@ -46,10 +46,8 @@ const LoginForm = () => {
       const authenticateResponse = await requestServerAction(formData, URL);
 
       if (authenticateResponse.status === 200) {
-        toast.success(authenticateResponse.data.success);
         console.log(authenticateResponse.data);
-        console.log(authenticateResponse.headers["set-cookie"]);
-        console.log(authenticateResponse.status);
+        toast.success(authenticateResponse.data.success);
       } else {
         toast.error(authenticateResponse.data.error);
       }

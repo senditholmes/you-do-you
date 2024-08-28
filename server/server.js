@@ -1,14 +1,16 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
 
-import { prepareUserData } from "./helpers/auth.js";
-import { insertQuery, checkIfUserExists } from "./helpers/dbqueries.js";
+import { prepareUserData } from "./utils/auth.js";
+import { createJWT } from "./utils/auth.js";
+import { insertQuery, checkIfUserExists } from "./utils/dbqueries.js";
+
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-dotenv.config();
 
+// GLOBAL
+dotenv.config();
 const PORT = process.env.PORT;
 
 // APP
@@ -25,7 +27,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// SIGNUP
+// ROUTES
 app.post("/signup", async (req, res) => {
   const sanitzedUser = await prepareUserData(req.body, "signup");
   const userInDatabase = await checkIfUserExists(sanitzedUser);
@@ -35,7 +37,8 @@ app.post("/signup", async (req, res) => {
   } else {
     const insertResult = await insertQuery(sanitzedUser);
     if (insertResult) {
-      res.status(200).send({ success: "User added successfully." });
+      const token = createJWT(userInDatabase);
+      res.status(200).send({ token, success: "User added successfully." });
     }
   }
 });
@@ -49,20 +52,9 @@ app.post("/login", async (req, res) => {
   );
 
   if (userValidated) {
-    jwt.sign(
-      {
-        id: userInDatabase.UserID,
-        username: userInDatabase.Username,
-        email: userInDatabase.Email,
-      },
-      process.env.JWT_SECRET,
-      {},
-      (error, token) => {
-        if (error) throw error;
-        console.log(token);
-        res.cookie("token", token).send("Success");
-      }
-    );
+    // check if the token they have matches the one we would create
+    const token = createJWT(userInDatabase);
+    res.status(200).send({ token, success: "User signed in successfully." });
   } else {
     res.status(401).send({ error: "Invalid credentials" });
   }
