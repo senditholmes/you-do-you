@@ -10,6 +10,7 @@ const requestServerAction = async (
   const response = await axios.post(URL, formData, {
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Credentials": true,
     },
   });
 

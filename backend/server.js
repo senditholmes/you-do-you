@@ -1,31 +1,43 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
-
 import { prepareUserData } from "./utils/auth.js";
 import { createJWT } from "./utils/auth.js";
 import { insertQuery, checkIfUserExists } from "./utils/dbqueries.js";
-
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
+
+import morgan from "morgan";
 import dotenv from "dotenv";
-
-// GLOBAL
+import router from "./router.js";
 dotenv.config();
-const PORT = process.env.PORT;
 
-// APP
 const app = express();
+const PORT = process.env.PORT;
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  allowedHeaders: [
+    "set-cookie",
+    "Content-Type",
+    "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Credentials",
+  ],
+};
 
 // MIDDLEWARE
+app.use(morgan("dev"));
 app.use(express.text(), express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(urlencoded({ extended: false }));
+app.use(urlencoded({ extended: true }));
 
 // INDEX
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.status(200);
+  res.send({ message: "Index Served" });
 });
+
+app.use("/api", router);
 
 // ROUTES
 app.post("/signup", async (req, res) => {
@@ -46,17 +58,22 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
   const userToValidate = req.body;
   const userInDatabase = await checkIfUserExists(userToValidate);
-  const userValidated = await bcrypt.compare(
-    userToValidate.password,
-    userInDatabase.PasswordHash
-  );
 
-  if (userValidated) {
-    // check if the token they have matches the one we would create
-    const token = createJWT(userInDatabase);
-    res.status(200).send({ token, success: "User signed in successfully." });
+  if (userInDatabase) {
+    const userValidated = await bcrypt.compare(
+      userToValidate.password,
+      userInDatabase.PasswordHash
+    );
+
+    if (userValidated) {
+      const token = createJWT(userInDatabase);
+      res
+        .status(200)
+        .cookie("token", token, { maxAge: 100000, httpOnly: true })
+        .send({ success: "User signed in successfully." });
+    }
   } else {
-    res.status(401).send({ error: "Invalid credentials" });
+    res.send({ message: "Invalid Credentials" }).status(401);
   }
 });
 

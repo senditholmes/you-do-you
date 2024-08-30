@@ -46,7 +46,8 @@ const createJWT = (user) => {
       id: user.UserID,
       username: user.Username,
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { algorithm: "HS256" }
   );
 
   return token;
