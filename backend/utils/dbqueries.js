@@ -41,6 +41,23 @@ const insertQuery = async (user) => {
   });
 };
 
+const getUserById = async (userId) => {
+  return new Promise((resolve, reject) => {
+    db.get(
+      "SELECT * FROM Users WHERE UserId = $userId",
+      {
+        $userId: userId,
+      },
+      (err, row) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(row);
+      }
+    );
+  });
+};
+
 const checkIfUserExists = async (userData) => {
   return new Promise((resolve, reject) => {
     db.get(
@@ -58,4 +75,4 @@ const checkIfUserExists = async (userData) => {
   });
 };
 
-export { insertQuery, checkIfUserExists };
+export { insertQuery, checkIfUserExists, getUserById };

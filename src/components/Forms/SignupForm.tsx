@@ -73,6 +73,10 @@ const SignupForm = () => {
 
   const onSubmit: SubmitHandler<SignUpFormFields> = async (formData) => {
     try {
+      formData.firstName = formData.firstName.trim().toLowerCase();
+      formData.lastName = formData.lastName.trim().toLowerCase();
+      formData.username = formData.username.trim().toLowerCase();
+      formData.password = formData.password.trim();
       const insertRequestResponse = await requestServerAction(formData, URL);
 
       if (insertRequestResponse.status === 200) {

@@ -7,10 +7,11 @@ import generatePasswordSchema from "../../helpers/generatePasswordSchema";
 import InputField from "../InputField";
 import toast from "react-hot-toast";
 import { requestServerAction } from "../../helpers/API";
+import { useNavigate } from "react-router-dom";
+import { signInSuccess } from "../../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const URL = "http://localhost:3000/login";
-
-// /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
 const passwordSchema = generatePasswordSchema();
 const loginSchema = z.object({
@@ -26,6 +27,9 @@ export type LoginFormFields = z.infer<typeof loginSchema>;
 /////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.user);
   const {
     register,
     handleSubmit,
@@ -43,13 +47,19 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (formData) => {
     try {
-      const authenticateResponse = await requestServerAction(formData, URL);
-
-      if (authenticateResponse.status === 200) {
-        console.log(authenticateResponse.data);
-        toast.success(authenticateResponse.data.success);
+      formData.username = formData.username.trim().toLowerCase();
+      const authenticateResponse = await requestServerAction(
+        formData,
+        "http://localhost:3000/login"
+      );
+      if (authenticateResponse.data.success) {
+        dispatch(signInSuccess(authenticateResponse.data.user));
+        toast.success(
+          `${authenticateResponse.data.message} Welcome ${currentUser.userName}`
+        );
+        navigate(`/`, { replace: true });
       } else {
-        toast.error(authenticateResponse.data.error);
+        toast.error(authenticateResponse.data.message);
       }
     } catch (error) {
       setError("root", { message: `${error}` });
