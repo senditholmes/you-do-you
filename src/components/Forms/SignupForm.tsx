@@ -1,20 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
 import toast from "react-hot-toast";
-
 import { passwordsMatch } from "../../helpers/passwordMatch";
-import { requestServerAction } from "../../helpers/API";
+import requestServerAction from "../../api/API";
 import { signInFormInputs } from "../../utils/signUpFormInputs";
 import generatePasswordSchema from "../../helpers/generatePasswordSchema";
-
 import InputField from "../InputField";
-
-const URL = "http://localhost:3000/signup";
 
 // /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
@@ -77,7 +71,10 @@ const SignupForm = () => {
       formData.lastName = formData.lastName.trim().toLowerCase();
       formData.username = formData.username.trim().toLowerCase();
       formData.password = formData.password.trim();
-      const insertRequestResponse = await requestServerAction(formData, URL);
+      const insertRequestResponse = await requestServerAction.signup(
+        formData,
+        "http://localhost:3000/auth/signup"
+      );
 
       if (insertRequestResponse.status === 200) {
         toast.success(insertRequestResponse.data.success);

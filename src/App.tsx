@@ -1,31 +1,23 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Landing from "./pages/Landing";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SignupPage from "./pages/Signup";
-import LoginPage from "./pages/Login";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Landing from "./pages/Landing.tsx";
 import { Toaster } from "react-hot-toast";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    },
-  },
-});
+import Home from "./pages/Home.tsx";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { currentUser } = useSelector((state: any) => state.user);
+
   return (
     <>
       <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <Toaster position="top-right" toastOptions={{ duration: 2000 }} />
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-          </Routes>
-        </QueryClientProvider>
+        <Toaster position="top-right" toastOptions={{ duration: 2000 }} />
+        <Routes>
+          <Route path="/" element={currentUser ? <Home /> : <Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
       </BrowserRouter>
     </>
   );

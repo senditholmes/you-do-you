@@ -32,7 +32,6 @@ const prepareUserData = async (userData, type) => {
           .slice(0, 19)
           .replace("T", " ");
       }
-
       resolve(sanitzedUserData);
     } catch (error) {
       reject(error);
