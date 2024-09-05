@@ -2,14 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import { loginInFormInputs } from "../../utils/loginInFormInputs";
-import generatePasswordSchema from "../../helpers/generatePasswordSchema";
+import { loginInFormInputs } from "../../utils/inputs/loginInFormInputs";
 import InputField from "../InputField";
 import toast from "react-hot-toast";
 import requestServerAction from "../../api/API";
 import { useNavigate } from "react-router-dom";
-import { signInSuccess } from "../../redux/user/userSlice";
-import { useDispatch } from "react-redux";
+import generatePasswordSchema from "../../utils/funcs/generatePasswordSchema";
 
 ///////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
@@ -27,7 +25,6 @@ export type LoginFormFields = z.infer<typeof loginSchema>;
 /////////////////////////////////////////////////////////////////// HOOKS AND STATE /////////////////////////////////////////////////////////////////////
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {
@@ -53,8 +50,6 @@ const LoginForm = () => {
         "http://localhost:3000/auth/login"
       );
       if (authenticateResponse.data.success) {
-        dispatch(signInSuccess(authenticateResponse.data.user));
-        toast.success(`${authenticateResponse.data.message}`);
         navigate(`/`, { replace: true });
       } else {
         toast.error(authenticateResponse.data.message);

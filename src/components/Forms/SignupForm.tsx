@@ -4,11 +4,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { passwordsMatch } from "../../helpers/passwordMatch";
 import requestServerAction from "../../api/API";
-import { signInFormInputs } from "../../utils/signUpFormInputs";
-import generatePasswordSchema from "../../helpers/generatePasswordSchema";
+import { signInFormInputs } from "../../utils/inputs/signUpFormInputs";
 import InputField from "../InputField";
+import { passwordsMatch } from "../../utils/funcs/passwordMatch";
+import generatePasswordSchema from "../../utils/funcs/generatePasswordSchema";
 
 // /////////////////////////////////////////////////////////////////// SCHEMA //////////////////////////////////////////////////////////////////////////
 
@@ -76,8 +76,8 @@ const SignupForm = () => {
         "http://localhost:3000/auth/signup"
       );
 
-      if (insertRequestResponse.status === 200) {
-        toast.success(insertRequestResponse.data.success);
+      if (insertRequestResponse.data.success) {
+        toast.success(insertRequestResponse.data.message);
         navigate(`/login`, { replace: true });
       } else {
         toast.error(insertRequestResponse.data.error);

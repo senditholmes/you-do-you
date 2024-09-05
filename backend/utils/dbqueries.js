@@ -44,7 +44,7 @@ const insertQuery = async (user) => {
 const getUserById = async (userId) => {
   return new Promise((resolve, reject) => {
     db.get(
-      "SELECT * FROM Users WHERE UserId = $userId",
+      "SELECT UserId, FirstName, LastName, Username, Email, CreatedAt FROM Users WHERE UserId = $userId",
       {
         $userId: userId,
       },

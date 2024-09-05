@@ -3,12 +3,25 @@ import { prepareUserData } from "./utils/authFuncs.js";
 import { createJWT } from "./utils/authFuncs.js";
 import bcrypt from "bcrypt";
 import { checkIfUserExists, insertQuery } from "./utils/dbqueries.js";
+import protect from "./utils/middleware/protect.js";
+import { getUserById } from "./utils/dbqueries.js";
 
 const auth = Router();
 
-auth.get("/", async (req, res) => {
-  console.log("Auth route acessed");
-  res.send("Auth Route Accessed");
+auth.post("/autologin", protect, async (req, res) => {
+  const user = await getUserById(req.verifiedCookie.id);
+  if (user) {
+    res.send({
+      success: true,
+      message: "User verified and logged in",
+      user,
+    });
+  } else {
+    res.send({
+      success: false,
+      message: "Unable to auto-login, please login manually",
+    });
+  }
 });
 
 auth.post("/signup", async (req, res) => {
@@ -39,12 +52,6 @@ auth.post("/login", async (req, res) => {
 
     if (userValidated) {
       const token = createJWT(userInDatabase);
-      const user = {
-        firstName: userInDatabase.FirstName,
-        lastName: userInDatabase.LastName,
-        userName: userInDatabase.Username,
-        email: userInDatabase.Email,
-      };
       res
         .status(200)
         .cookie("access_token", token, {
@@ -54,7 +61,7 @@ auth.post("/login", async (req, res) => {
         .send({
           success: true,
           message: "User signed in successfully.",
-          user,
+          userInDatabase,
         });
     }
   } else {

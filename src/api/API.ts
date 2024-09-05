@@ -42,6 +42,22 @@ const requestServerAction = {
 
     return response;
   },
+
+  autoLogin: async (URL: string) => {
+    const response = await axios.post(
+      URL,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true,
+        },
+      }
+    );
+
+    return response;
+  },
 };
 
 export default requestServerAction;
