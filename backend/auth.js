@@ -40,7 +40,7 @@ auth.post("/signup", async (req, res) => {
   }
 });
 
-auth.post("/login", async (req, res) => {
+auth.post("/manualLogin", async (req, res) => {
   const userToValidate = req.body;
   const userInDatabase = await checkIfUserExists(userToValidate);
 
@@ -69,8 +69,11 @@ auth.post("/login", async (req, res) => {
   }
 });
 
-auth.post("/logout", (req, res) => {
-  console.log(req, res);
+auth.post("/logout", protect, (req, res) => {
+  res
+    .clearCookie("access_token", { path: "/" })
+    .status(200)
+    .send({ success: true, message: "Cookie cleared, please login again." });
 });
 
 export default auth;

@@ -14,6 +14,7 @@ function protect(req, res, next) {
     console.log(cookie);
     next();
   } else {
+    console.log("JWT Check Failed");
     res.status(401).send({ success: false, message: "Please login again." });
     return;
   }
