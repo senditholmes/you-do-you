@@ -1,4 +1,17 @@
 import { Link } from "react-router-dom";
+import requestServerAction from "../api/API";
+
+async function handleLogout(e: any) {
+  e.preventDefault();
+  try {
+    const logoutResponse = await requestServerAction.logout(
+      "http://localhost:3000/auth/logout"
+    );
+    console.log(logoutResponse);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function Nav() {
   return (
@@ -18,6 +31,9 @@ export default function Nav() {
         <li className="text-xl">
           <button className="p-5">
             <Link to="/signup">Sign Up</Link>
+          </button>
+          <button className="p-5" onClick={handleLogout}>
+            Logout
           </button>
         </li>
       </ul>

@@ -47,7 +47,7 @@ const LoginForm = () => {
       formData.username = formData.username.trim().toLowerCase();
       const authenticateResponse = await requestServerAction.login(
         formData,
-        "http://localhost:3000/auth/login"
+        "http://localhost:3000/auth/manualLogin"
       );
       if (authenticateResponse.data.success) {
         navigate(`/`, { replace: true });
